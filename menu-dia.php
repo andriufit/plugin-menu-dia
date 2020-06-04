@@ -23,6 +23,16 @@
 
         public function __construct(){
 
+            $this->registerSettings();
+
+            add_action(
+                'admin_enqueue_scripts',
+                [
+                    $this,
+                    "enqueueScripts"
+                ]
+            );
+
             add_action(
                 "admin_menu",
                 [
@@ -43,6 +53,21 @@
         }
 
 
+        public function enqueueScripts() {
+
+            wp_enqueue_script("menu-admin-page", plugin_dir_url( __FILE__ ) . "admin/js/menu-admin-page.js");
+
+        }
+
+
+        public function registerSettings() {
+
+            register_setting( "menu-dia-settings", "first-food" );
+            register_setting( "menu-dia-settings", "second-food" );
+
+        }
+
+
         public function addAdminPage() {
 
             add_menu_page( 
@@ -53,7 +78,9 @@
                 [
                     $this,
                     "getAdminPage"
-                ]
+                ],
+                "",
+                29
             );
 
         }
