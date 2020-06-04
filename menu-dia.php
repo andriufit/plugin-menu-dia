@@ -1,4 +1,8 @@
 <?php
+
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
     /**
      * Plugin Name: Menú del día para Cerveceria Mari-Mer
      * Description: Plugin que utiliza el catalogo de comida para poder mostrar un menú del día
@@ -12,17 +16,55 @@
         die;
     }
 
-    define( 'MENU_DIA_VERSION', '1.0' );
+    class MenuDia{ 
 
-    require plugin_dir_path( __FILE__ ) . 'includes/menu_dia_admin.php';
-    require plugin_dir_path( __FILE__ ) . 'includes/menu_dia_front.php';
+        private static $instance;
 
+
+        public function __construct(){
+
+            add_action(
+                "admin_menu",
+                [
+                    $this,
+                    "addAdminPage"
+                ]
+            );
+
+        }
+
+
+        public static function instance() {
+
+            if ( ! isset( self::$instance ) ) self::$instance = new self;
     
-    function init_plugin() {
-        $menu_admin = new Menu_dia_admin();
-        $menu_front = new Menu_dia_front();
+            return self::$instance;
 
-        $menu_admin->init();
-        $menu_front->init();
+        }
+
+
+        public function addAdminPage() {
+
+            add_menu_page( 
+                "Menú del día",
+                "Menú del día",
+                "administrator",
+                "menu-dia-settings",
+                [
+                    $this,
+                    "getAdminPage"
+                ]
+            );
+
+        }
+
+
+        public function getAdminPage() {
+            
+            require plugin_dir_path( __FILE__ ) . "/includes/admin-page.php";
+
+        }
+
     }
-    init_plugin();
+
+    $menuDia = MenuDia::instance();
