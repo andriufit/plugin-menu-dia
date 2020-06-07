@@ -23,13 +23,19 @@
 
 
         public $menuShortcode;
+        private $pluginUrl;
+        private $pluginDir;
         private static $instance;
 
 
         public function __construct(){
 
-            $this->menuShortcode = new MenuShortcode();
+            $this->pluginUrl = plugin_dir_url( __FILE__ );
+            $this->pluginDir = plugin_dir_path( __FILE__ );
+
             $this->registerSettings();
+
+            $this->menuShortcode = new MenuShortcode($this->pluginUrl, $this->pluginDir);
 
             add_shortcode(
                 'menu-dia',
@@ -55,6 +61,15 @@
                 ]
             );
 
+            //Función que usa el hook wp_loaded que se ejecuta cuando wordpres termina la ejecucion, cuando se ejecuta sobreescribe el custom post type food para cambiar su slug 
+            add_action(
+                "wp_loaded",
+                [
+                    $this,
+                    "overridePostType"
+                ]
+            );
+
         }
 
 
@@ -67,11 +82,21 @@
         }
 
 
+        public function overridePostType() {
+
+            $postTypeData= get_post_type_object("food");
+            $postTypeData->rewrite["slug"] = "plato";
+            
+            register_post_type( "food", $postTypeData );
+
+        }
+
+
         public function enqueueScripts() {
 
-            wp_enqueue_style("multiselect-css",  plugin_dir_url( __FILE__ ) . "admin/css/multi-select.dist.css" );
-            wp_enqueue_script("multiselect-js", plugin_dir_url( __FILE__ ) . "admin/js/multi-select.js");
-            wp_enqueue_script("menu-admin-page", plugin_dir_url( __FILE__ ) . "admin/js/menu-admin-page.js");
+            wp_enqueue_style("multiselect-css",  $this->pluginUrl . "admin/css/multi-select.dist.css" );
+            wp_enqueue_script("multiselect-js", $this->pluginUrl . "admin/js/multi-select.js");
+            wp_enqueue_script("menu-admin-page", $this->pluginUrl . "admin/js/menu-admin-page.js");
 
         }
 
@@ -106,7 +131,7 @@
 
         public function getAdminPage() {
             
-            require plugin_dir_path( __FILE__ ) . "/includes/admin-page.php";
+            require $this->pluginDir . "/includes/admin-page.php";
 
         }
 

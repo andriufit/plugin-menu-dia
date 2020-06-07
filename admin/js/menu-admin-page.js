@@ -20,4 +20,5 @@ jQuery(function($) {
 
         $("#menu-admin-form").submit();
     });
+
 });
