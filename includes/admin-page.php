@@ -1,10 +1,66 @@
 <?php
-    $args = [
+    $firstFoodList = [];
+    $secondFoodList = [];
+    $drinkList = [];
+    $dessertList = [];
+    
+    $listArgs = [
         "post_type" => "food",
-        "numberposts" => "-1"
+        "numberposts" => "-1",
+        'tax_query' => [
+            [
+                'taxonomy' => 'food_category',
+                'field' => 'term_id',
+            ]
+        ]
     ];
 
-    $foods = get_posts($args);
+    //Buscó el id de las categorias del custom post food
+    $taxArgs = [
+        "taxonomy" => "food_category", 
+        'name' => 'Primer Plato'
+    ];
+
+    $firstFoodTax = get_terms($taxArgs);
+
+    $taxArgs["name"] = "Segundo Plato";
+    $secondFoodTax = get_terms($taxArgs);
+
+    $taxArgs["name"] = "Bebida";
+    $drinkTax = get_terms($taxArgs);
+
+    $taxArgs["name"] = "Postre";
+    $dessertTax = get_terms($taxArgs);
+    
+
+    if(isset($firstFoodTax[0]->term_id)){
+
+        $listArgs["tax_query"][0]["terms"] = $firstFoodTax[0]->term_id;
+        $firstFoodList = get_posts($listArgs);
+
+    }
+
+    if(isset($secondFoodTax[0]->term_id)){
+
+        $listArgs["tax_query"][0]["terms"] = $secondFoodTax[0]->term_id;
+        $secondFoodList = get_posts($listArgs);
+
+    }
+
+    if(isset($drinkTax[0]->term_id)){
+
+        $listArgs["tax_query"][0]["terms"] = $drinkTax[0]->term_id;
+        $drinkList = get_posts($listArgs);
+
+    }
+
+    if(isset($dessertTax[0]->term_id)){
+
+        $listArgs["tax_query"][0]["terms"] = $dessertTax[0]->term_id;
+        $dessertList = get_posts($listArgs);
+
+    }
+
     $firstFood = json_decode(get_option( "first-food" )) ? json_decode(get_option( "first-food" )) : [];
     $secondFood = json_decode(get_option( "second-food" )) ? json_decode(get_option( "second-food" )) : [];
     $drinks = json_decode(get_option( "drinks" )) ? json_decode(get_option( "drinks" )) : [];
@@ -25,7 +81,7 @@
                     </th>
                     <td>
                         <select class="multiselect" id="first-food" multiple>
-                            <?php foreach($foods as $key => $value) { ?>
+                            <?php foreach($firstFoodList as $key => $value) { ?>
                                 <option value="<?php echo $value->ID; ?>" <?php if(in_array($value->ID, $firstFood)) echo "selected" ?>><?php echo $value->post_title; ?></option>
                             <?php } ?>
                         </select>
@@ -38,7 +94,7 @@
                     </th>
                     <td>
                         <select class="multiselect" id="second-food" multiple>
-                            <?php foreach($foods as $key => $value) { ?>
+                            <?php foreach($secondFoodList as $key => $value) { ?>
                                 <option value="<?php echo $value->ID; ?>" <?php if(in_array($value->ID, $secondFood)) echo "selected" ?>><?php echo $value->post_title; ?></option>
                             <?php } ?>
                         </select>
@@ -51,7 +107,7 @@
                     </th>
                     <td>
                         <select class="multiselect" id="drinks" multiple>
-                            <?php foreach($foods as $key => $value) { ?>
+                            <?php foreach($drinkList as $key => $value) { ?>
                                 <option value="<?php echo $value->ID; ?>" <?php if(in_array($value->ID, $drinks)) echo "selected" ?>><?php echo $value->post_title; ?></option>
                             <?php } ?>
                         </select>
@@ -64,7 +120,7 @@
                     </th>
                     <td>
                         <select class="multiselect" id="desserts" multiple>
-                            <?php foreach($foods as $key => $value) { ?>
+                            <?php foreach($dessertList as $key => $value) { ?>
                                 <option value="<?php echo $value->ID; ?>" <?php if(in_array($value->ID, $desserts)) echo "selected" ?>><?php echo $value->post_title; ?></option>
                             <?php } ?>
                         </select>

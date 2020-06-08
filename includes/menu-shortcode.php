@@ -87,6 +87,13 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="menu-btn">
+                                    <a class="btn btn-default btn-lg" href="/carta">Ver la carta</a>   
+                                </div>
+                            </div>
+                        </div>
                     </div>
             ';
         

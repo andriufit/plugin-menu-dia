@@ -85,7 +85,7 @@
         public function overridePostType() {
 
             $postTypeData= get_post_type_object("food");
-            $postTypeData->rewrite["slug"] = "plato";
+            $postTypeData->rewrite["slug"] = "lacarta";
             
             register_post_type( "food", $postTypeData );
 
