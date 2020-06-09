@@ -62,10 +62,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <ul class="daily-menu-types">
-                                    <li class="current" menu-type="all">
-                                        Todo
-                                    </li>
-                                    <li menu-type="firsts">
+                                    <li class="current" menu-type="firsts">
                                         Primeros
                                     </li>
                                     <li menu-type="seconds">

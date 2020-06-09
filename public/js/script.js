@@ -6,6 +6,10 @@ jQuery(function($) {
         itemSelector: ".menu-food-container"
     });
 
+    isotope.isotope({
+        filter: ".firsts"
+    });
+
     $(".daily-menu-types li").on("click", function() {
 
         parent = $(this).parent();

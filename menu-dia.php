@@ -1,9 +1,5 @@
 <?php
 
-    ini_set('display_errors', 1);
-    ini_set('display_startup_errors', 1);
-    error_reporting(E_ALL);
-
     require plugin_dir_path( __FILE__ ) . "includes/menu-shortcode.php";
 
     /**
@@ -54,6 +50,14 @@
             );
 
             add_action(
+                'wp_enqueue_scripts',
+                [
+                    $this,
+                    "frontEnqueueScripts"
+                ]
+            );
+
+            add_action(
                 "admin_menu",
                 [
                     $this,
@@ -82,10 +86,17 @@
         }
 
 
+        public function frontEnqueueScripts() {
+
+            wp_enqueue_script("carta-js",  $this->pluginUrl . "public/js/carta.js" );
+
+        }
+
+
         public function overridePostType() {
 
             $postTypeData= get_post_type_object("food");
-            $postTypeData->rewrite["slug"] = "lacarta";
+            $postTypeData->rewrite["slug"] = "carta";
             
             register_post_type( "food", $postTypeData );
 
@@ -94,6 +105,7 @@
 
         public function enqueueScripts() {
 
+            wp_enqueue_style("menu-admin-css",  $this->pluginUrl . "admin/css/style.css" );
             wp_enqueue_style("multiselect-css",  $this->pluginUrl . "admin/css/multi-select.dist.css" );
             wp_enqueue_script("multiselect-js", $this->pluginUrl . "admin/js/multi-select.js");
             wp_enqueue_script("menu-admin-page", $this->pluginUrl . "admin/js/menu-admin-page.js");
